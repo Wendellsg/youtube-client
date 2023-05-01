@@ -4,6 +4,7 @@ import Player from "@/components/Player";
 import { SideBar } from "@/components/SideBar";
 import { usePlaylist } from "@/hooks/usePlaylist";
 import { SiDiscogs } from "react-icons/si";
+import { PlayerDegrade } from "@/components/PlayerDegrade";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +18,12 @@ export default function Home() {
       <SideBar />
       {actualVideo && (
         <div className="flex flex-col items-center justify-center w-full min-h-screen relative p-4">
+          <PlayerDegrade thumbnail={actualVideo.snippet.thumbnails.default.url}/>
           <img
             src={actualVideo.snippet.thumbnails.high.url}
             alt={actualVideo.snippet.title}
             className="w-96 h-96 rounded-md object-cover self-center"
           />
-
           <Player video={actualVideo} />
         </div>
       )}
