@@ -91,9 +91,9 @@ const Player: React.FC<{
 
   return (
     <div
-      className="flex gap-5 flex-col sm:flex-row w-full sm:w-5/6 py-3 px-7 rounded-lg justify-between items-center absolute bottom-4 h-full sm:h-fit"
+      className="flex gap-5 flex-col sm:flex-row w-full sm:w-5/6 py-3 px-7 rounded-lg justify-between items-center sm:absolute bottom-4 h-fit"
       style={{
-        background: `rgba(${color}, 0.5)`,
+        background: `rgba(${color}, 0.7)`,
       }}
     >
       <YouTube
@@ -146,7 +146,7 @@ const Player: React.FC<{
         />
       </div>
 
-      <div className="hidden gap-2 items-center justify-center sm:flex">
+      <div className="flex gap-2 items-center justify-center">
         <img
           src={video.snippet.thumbnails.medium.url}
           alt="video thumbnail"
@@ -193,7 +193,7 @@ const Player: React.FC<{
             : Math.floor(totalTime % 60)}
         </span>
       </div>
-      <div className="flex gap-3 items-center">
+      <div className="gap-3 items-center hidden sm:flex">
         <BsShuffle
           size={20}
           style={{ cursor: "pointer" }}

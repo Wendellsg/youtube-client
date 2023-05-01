@@ -10,3 +10,4 @@ export const shuffleAtom = atom<boolean>(false);
 export const volumeAtom = atom<number>(100);
 export const playingAtom = atom<boolean>(false);
 export const favoriteVideosAtom = atom<VideoItem[]>([]);
+export const addingNewVideoAtom = atom<boolean>(false);

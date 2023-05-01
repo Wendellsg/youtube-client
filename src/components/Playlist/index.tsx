@@ -9,7 +9,7 @@ export const Playlist = () => {
   console.log(actualVideo);
 
   return (
-    <div className="flex flex-col items-start justify-start gap-4 w-fit max-h-screen h-screen  bg-slate-800/90 p-4">
+    <div className="flex flex-col items-start justify-start gap-4 w-full sm:w-fit max-h-screen h-screen  bg-slate-800/90 p-4">
       <h1 className="text-2xl font-bold  whitespace-nowrap">Playlist atual</h1>
       <div className="flex justify-start items-start flex-col gap-8 max-w-sm mt-6 max-h-fit overflow-y-auto overflow-x-hidden pr-4">
         {playList.map((video) => (

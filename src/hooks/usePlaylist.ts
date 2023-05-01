@@ -6,6 +6,7 @@ import {
   playingAtom,
   shuffleAtom,
   volumeAtom,
+  addingNewVideoAtom,
 } from "./states";
 import { useAtom } from "jotai";
 import { useColor } from "./useColor";
@@ -17,13 +18,20 @@ export const usePlaylist = () => {
   const [playing, setPlaying] = useAtom(playingAtom);
   const [volume, setVolume] = useAtom(volumeAtom);
   const [favoriteVideos, setFavoriteVideos] = useAtom(favoriteVideosAtom);
+  const [addingNewVideo, setAddingNewVideo] = useAtom(addingNewVideoAtom);
   const { getColor } = useColor();
 
   const addVideo = (video: VideoItem) => {
+    setAddingNewVideo(true);
+
     setPlayList([...playList, video]);
     if (!actualVideo || !playing) {
       setVideo(video);
     }
+
+    setTimeout(() => {
+      setAddingNewVideo(false);
+    }, 1000);
   };
 
   const removeVideo = (video: VideoItem) => {
@@ -122,5 +130,6 @@ export const usePlaylist = () => {
     addFavoriteVideo,
     removeFavoriteVideo,
     getFavoriteVideos,
+    addingNewVideo,
   };
 };

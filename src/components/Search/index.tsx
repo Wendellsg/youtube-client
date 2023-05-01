@@ -9,7 +9,7 @@ export const Search = () => {
   const { addVideo } = usePlaylist();
 
   return (
-    <div className="flex flex-col items-start justify-start gap-4 max-h-screen h-screen  bg-slate-800/90 p-4">
+    <div className="flex flex-col items-start justify-start gap-4 w-full sm:w-fit max-h-screen h-screen  bg-slate-800/90 p-4">
       <div className="flex gap-3 items-center mt-4 w-full p-4 rounded-md  text-black outline-none shadow-md text-sm  bg-gray-400/60">
         <input
           type="text"
@@ -17,6 +17,11 @@ export const Search = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-transparent outline-none text-white"
           placeholder="Pesquise por uma música ou artista"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              fetchVideos();
+            }
+          }}
         />
         <FaSearch
           onClick={fetchVideos}
