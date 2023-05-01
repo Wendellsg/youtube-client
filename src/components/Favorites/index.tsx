@@ -1,21 +1,19 @@
-/* eslint-disable @next/next/no-img-element */
 import { useColor } from "@/hooks/useColor";
 import { usePlaylist } from "@/hooks/usePlaylist";
 
-export const Playlist = () => {
-  const { playList, setVideo, actualVideo } = usePlaylist();
+export const Favorites = () => {
+  const { favoriteVideos, setVideo, actualVideo } = usePlaylist();
   const { color } = useColor();
-
-  console.log(actualVideo);
 
   return (
     <div className="flex flex-col items-start justify-start gap-4 w-fit max-h-screen h-screen  bg-slate-800/90 p-4">
-      <h1 className="text-2xl font-bold  whitespace-nowrap">Playlist atual</h1>
+      <h1 className="text-2xl font-bold whitespace-nowrap">Seus favoritos</h1>
       <div className="flex justify-start items-start flex-col gap-8 max-w-sm mt-6 max-h-fit overflow-y-auto overflow-x-hidden pr-4">
-        {playList.map((video) => (
+        {favoriteVideos.map((video) => (
           <div
             key={video.id.videoId}
-            className={`flex items-start justify-start cursor-pointer gap-3 hover:bg-gray-400/50 p-3 rounded-lg  w-full`}
+            className="flex  items-start justify-start cursor-pointer gap-3  w-full hover:bg-gray-400/50 p-3 rounded-lg"
+            onClick={() => setVideo(video)}
             style={
               actualVideo?.id.videoId === video.id.videoId
                 ? {
@@ -23,7 +21,6 @@ export const Playlist = () => {
                   }
                 : {}
             }
-            onClick={() => setVideo(video)}
           >
             <img
               src={video.snippet.thumbnails.medium.url}
@@ -38,13 +35,13 @@ export const Playlist = () => {
             </div>
           </div>
         ))}
-
-        {playList.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-2">
-            <h2 className="text-sm font-bold">Nenhuma música na playlist</h2>
-          </div>
-        )}
       </div>
+
+      {favoriteVideos.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-2">
+          <h2 className="text-sm font-bold">Nenhuma musica favorita ainda</h2>
+        </div>
+      )}
     </div>
   );
 };

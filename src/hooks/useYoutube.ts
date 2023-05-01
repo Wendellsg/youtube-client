@@ -16,5 +16,5 @@ export const useYoutube = () => {
     setVideos(data.items);
   };
 
-  return { videos, fetchVideos, search, setSearch };
+  return { videos, fetchVideos, search, setSearch, setVideos };
 };

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Search } from "../Search";
 import { Playlist } from "../Playlist";
 import { useColor } from "@/hooks/useColor";
+import { Favorites } from "../Favorites";
 
 export const SideBar = () => {
   const [selectedTab, setSelectedTab] = useState("");
@@ -17,7 +18,7 @@ export const SideBar = () => {
       case "search":
         return <Search />;
       case "favorites":
-        return <h1>Favorites</h1>;
+        return <Favorites />;
       case "playlist":
         return <Playlist />;
       default:
@@ -27,10 +28,10 @@ export const SideBar = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-between relative p-6 bg-slate-800/90 h-screen">
-        <SiDiscogs size={40} color={`rgb(${color})`} />
+      <div className="flex sm:flex-col w-full sm:w-fit items-center justify-between relative p-6 bg-slate-800/90 sm:h-screen">
+        <SiDiscogs size={40} color={`#ee82ee`} className="h-0 sm:h-10"/>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex sm:flex-col gap-6 ">
           <FaSearch
             size={20}
             style={{
@@ -77,7 +78,7 @@ export const SideBar = () => {
             }}
           />
         </div>
-        <AiFillSetting size={25} />
+        <AiFillSetting size={25} className="h-0 sm:h-10"/>
       </div>
 
       {Tab()}

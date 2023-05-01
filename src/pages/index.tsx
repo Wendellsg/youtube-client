@@ -13,13 +13,13 @@ export default function Home() {
 
   return (
     <main
-      className={`flex min-h-screen h-full items-center justify-start gap-3 ${inter.className}`}
+      className={`flex min-h-screen h-full items-center justify-start gap-3 ${inter.className} sm:flex-row flex-col`}
     >
       <SideBar />
       {actualVideo && (
-        <div className="flex flex-col items-center justify-center w-full min-h-screen relative p-4">
+        <div className="flex flex-col items-center sm:justify-center sm:w-full min-h-min sm:min-h-screen relative p-4 mt-96 sm:mt-0 w-5/6">
           <PlayerDegrade />
-          
+
           <img
             src={actualVideo.snippet.thumbnails.high.url}
             alt={actualVideo.snippet.title}
@@ -34,7 +34,7 @@ export default function Home() {
           <SiDiscogs size={100} color="violet" />
           <h1 className="text-2xl font-bold text-center mt-5">
             Bem vindo ao{" "}
-            <span className="text-violet-300">Musica Sem Firula</span>
+            <span className="text-pink-400">Musica Sem Firula</span>
           </h1>
           <h2 className="text-1xl font-bold text-center">
             Para começar, pesquise por uma música ou artista

@@ -16,26 +16,20 @@ body {
   height: 27px;
 }
 ::-webkit-scrollbar-thumb {
-  background: violet;
+  background: #ee82ee;
   border: 0px none #fff;
   border-radius: 50px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: violet;
-}
-::-webkit-scrollbar-thumb:active {
-  background: #ee82ee;
-}
 ::-webkit-scrollbar-track {
-  background: #ee82ee50;
+  background: #fffFFF50;
   border: 0px none #fff;
   border-radius: 50px;
 }
 ::-webkit-scrollbar-track:hover {
-  background: #ee82ee50;
+  background: #fffFFF50;
 }
 ::-webkit-scrollbar-track:active {
-  background: #ee82ee50;
+  background: #fffFFF50;
 }
 ::-webkit-scrollbar-corner {
   background: transparent;
