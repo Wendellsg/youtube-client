@@ -6,9 +6,11 @@ import { IoMusicalNotes } from "react-icons/io5";
 import { useState } from "react";
 import { Search } from "../Search";
 import { Playlist } from "../Playlist";
+import { useColor } from "@/hooks/useColor";
 
 export const SideBar = () => {
   const [selectedTab, setSelectedTab] = useState("");
+  const { color } = useColor();
 
   const Tab = () => {
     switch (selectedTab) {
@@ -26,13 +28,14 @@ export const SideBar = () => {
   return (
     <>
       <div className="flex flex-col items-center justify-between relative p-6 bg-slate-800/90 h-screen">
-        <SiDiscogs size={40} color="violet" />
+        <SiDiscogs size={40} color={`rgb(${color})`} />
 
         <div className="flex flex-col gap-6">
           <FaSearch
             size={20}
             style={{
               cursor: "pointer",
+              color: selectedTab === "search" ? `rgb(${color})` : "gray",
             }}
             onClick={() => {
               if (selectedTab === "search") {
@@ -44,9 +47,10 @@ export const SideBar = () => {
             }}
           />
           <IoMusicalNotes
-            size={20}
+            size={25}
             style={{
               cursor: "pointer",
+              color: selectedTab === "playlist" ? `rgb(${color})` : "gray",
             }}
             onClick={() => {
               if (selectedTab === "playlist") {
@@ -58,9 +62,10 @@ export const SideBar = () => {
             }}
           />
           <AiFillHeart
-            size={20}
+            size={25}
             style={{
               cursor: "pointer",
+              color: selectedTab === "favorites" ? `rgb(${color})` : "gray",
             }}
             onClick={() => {
               if (selectedTab === "favorites") {
@@ -72,7 +77,7 @@ export const SideBar = () => {
             }}
           />
         </div>
-        <AiFillSetting size={20} />
+        <AiFillSetting size={25} />
       </div>
 
       {Tab()}

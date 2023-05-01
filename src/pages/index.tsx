@@ -18,11 +18,12 @@ export default function Home() {
       <SideBar />
       {actualVideo && (
         <div className="flex flex-col items-center justify-center w-full min-h-screen relative p-4">
-          <PlayerDegrade thumbnail={actualVideo.snippet.thumbnails.default.url}/>
+          <PlayerDegrade />
+          
           <img
             src={actualVideo.snippet.thumbnails.high.url}
             alt={actualVideo.snippet.title}
-            className="w-96 h-96 rounded-md object-cover self-center"
+            className="w-96 h-96 rounded-md object-cover"
           />
           <Player video={actualVideo} />
         </div>
