@@ -11,3 +11,10 @@ export const volumeAtom = atom<number>(100);
 export const playingAtom = atom<boolean>(false);
 export const favoriteVideosAtom = atom<VideoItem[]>([]);
 export const addingNewVideoAtom = atom<boolean>(false);
+
+// Jam
+export const jamRoomIdAtom = atom<string | null>(null);
+export const jamUpdatedAtAtom = atom<number>(0);
+
+// User
+export const usernameAtom = atom<string>("");

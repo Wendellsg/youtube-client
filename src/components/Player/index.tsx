@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import YouTube, {
   YouTubeProps,
   YouTubeEvent,
@@ -19,10 +19,18 @@ import { VideoItem } from "@/types";
 import { useColor } from "@/hooks/useColor";
 import { usePlaylist } from "@/hooks/usePlaylist";
 
-const Player: React.FC<{
-  video: VideoItem;
-}> = ({ video }) => {
-  const [player, setPlayer] = useState<YouTubePlayer | null>(null);
+// Fora do componente: objeto estável, não recriado a cada render
+const YT_OPTS: YouTubeProps["opts"] = {
+  height: "0",
+  width: "0",
+  playerVars: {
+    autoplay: 1,
+  },
+};
+
+const Player: React.FC<{ video: VideoItem }> = ({ video }) => {
+  const playerRef = useRef<YouTubePlayer | null>(null);
+  const [playerReady, setPlayerReady] = useState(false);
   const { color } = useColor();
   const {
     nextVideo,
@@ -40,65 +48,46 @@ const Player: React.FC<{
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
 
-  const progress = (currentTime / totalTime) * 100;
+  // Reseta timers ao trocar de vídeo (sem resetar playerReady — mesmo player é reutilizado)
+  useEffect(() => {
+    setCurrentTime(0);
+    setTotalTime(0);
+  }, [video.id.videoId]);
+
+  const progress = totalTime > 0 ? (currentTime / totalTime) * 100 : 0;
 
   const isFavorite = favoriteVideos.find(
-    (favoriteVideo) => favoriteVideo.id.videoId === video.id.videoId
+    (fav) => fav.id.videoId === video.id.videoId
   );
 
   const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    setPlayer(event.target);
+    playerRef.current = event.target;
+    setPlayerReady(true);
   };
 
   const onPlayerStateChange = (event: YouTubeEvent) => {
-    // faz algo quando o estado do player mudar
     if (event.data === 1) {
-      setTotalTime(player.getDuration());
+      setTotalTime(event.target.getDuration());
     }
-    setCurrentTime(player.getCurrentTime());
-  };
-
-  const playVideo = () => {
-    player.playVideo();
-  };
-
-  const pauseVideo = () => {
-    player.pauseVideo();
-  };
-
-  const stopVideo = () => {
-    player.stopVideo();
-  };
-
-  const opts = {
-    height: "0",
-    width: "0",
-    playerVars: {
-      // insira aqui suas variáveis ​​de player do YouTube
-      autoplay: 1,
-    },
+    setCurrentTime(event.target.getCurrentTime());
   };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (player && playing) {
-      interval = setInterval(() => {
-        setCurrentTime(player.getCurrentTime());
-      }, 1000);
-    }
+    if (!playing) return;
+    const interval = setInterval(() => {
+      setCurrentTime(playerRef.current?.getCurrentTime() ?? 0);
+    }, 1000);
     return () => clearInterval(interval);
-  }, [player, playing]);
+  }, [playing]);
 
   return (
     <div
       className="flex gap-5 flex-col sm:flex-row w-full sm:w-5/6 py-3 px-7 rounded-lg justify-between items-center sm:absolute bottom-4 h-fit"
-      style={{
-        background: `rgba(${color}, 0.7)`,
-      }}
+      style={{ background: `rgba(${color}, 0.7)` }}
     >
       <YouTube
         videoId={video.id.videoId}
-        opts={opts}
+        opts={YT_OPTS}
         onReady={onPlayerReady}
         onStateChange={onPlayerStateChange}
         onPlay={() => setPlaying(true)}
@@ -108,12 +97,6 @@ const Player: React.FC<{
           nextVideo();
         }}
         onError={(e) => console.log("Erro: ", e)}
-        onPlaybackRateChange={(e) =>
-          console.log("Velocidade de reprodução: ", e)
-        }
-        onPlaybackQualityChange={(e) =>
-          console.log("Qualidade de reprodução: ", e)
-        }
       />
 
       <div className="flex gap-3 items-center">
@@ -124,19 +107,15 @@ const Player: React.FC<{
         />
         {!playing ? (
           <BsFillPlayCircleFill
-            onClick={playVideo}
+            onClick={() => playerRef.current?.playVideo()}
             size={50}
-            style={{
-              cursor: "pointer",
-            }}
+            style={{ cursor: playerReady ? "pointer" : "default", opacity: playerReady ? 1 : 0.5 }}
           />
         ) : (
           <BsPauseCircleFill
-            onClick={pauseVideo}
+            onClick={() => playerRef.current?.pauseVideo()}
             size={50}
-            style={{
-              cursor: "pointer",
-            }}
+            style={{ cursor: "pointer" }}
           />
         )}
         <BsFillSkipEndFill
@@ -152,7 +131,6 @@ const Player: React.FC<{
           alt="video thumbnail"
           className="w-12 h-12 rounded-lg object-cover"
         />
-
         <div className="flex flex-col gap-2">
           <h2 className="text-sm font-bold">{video.snippet.title}</h2>
           <p className="text-xs">{video.snippet.channelTitle}</p>
@@ -175,11 +153,8 @@ const Player: React.FC<{
       <div className="flex gap-2 w-full items-center mx-10">
         <span className="text-sm font-bold">
           {Math.floor(currentTime / 60)}:
-          {Math.floor(currentTime % 60) < 10
-            ? `0${Math.floor(currentTime % 60)}`
-            : Math.floor(currentTime % 60)}
+          {String(Math.floor(currentTime % 60)).padStart(2, "0")}
         </span>
-
         <div className="w-full h-1 bg-gray-300 rounded-lg">
           <div
             className="h-full rounded-lg"
@@ -188,11 +163,10 @@ const Player: React.FC<{
         </div>
         <span className="text-sm font-bold">
           {Math.floor(totalTime / 60)}:
-          {Math.floor(totalTime % 60) < 10
-            ? `0${Math.floor(totalTime % 60)}`
-            : Math.floor(totalTime % 60)}
+          {String(Math.floor(totalTime % 60)).padStart(2, "0")}
         </span>
       </div>
+
       <div className="gap-3 items-center hidden sm:flex">
         <BsShuffle
           size={20}
@@ -200,16 +174,15 @@ const Player: React.FC<{
           onClick={() => setShuffle(!shuffle)}
           color={shuffle ? "black" : "white"}
         />
-
         {volume === 0 ? (
           <BsFillVolumeMuteFill
             size={20}
             style={{ cursor: "pointer" }}
             onClick={() => {
               setVolume(100);
-              player?.setVolume(100);
+              playerRef.current?.setVolume(100);
             }}
-            color={"white"}
+            color="white"
           />
         ) : (
           <BsFillVolumeUpFill
@@ -217,9 +190,9 @@ const Player: React.FC<{
             style={{ cursor: "pointer" }}
             onClick={() => {
               setVolume(0);
-              player?.setVolume(100);
+              playerRef.current?.setVolume(0);
             }}
-            color={"white"}
+            color="white"
           />
         )}
       </div>

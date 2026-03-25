@@ -1,3 +1,4 @@
+import { arrayMove } from "@dnd-kit/sortable";
 import { VideoItem } from "@/types";
 import {
   actualVideoAtom,
@@ -7,9 +8,12 @@ import {
   shuffleAtom,
   volumeAtom,
   addingNewVideoAtom,
+  jamRoomIdAtom,
+  usernameAtom,
 } from "./states";
 import { useAtom } from "jotai";
 import { useColor } from "./useColor";
+import axios from "axios";
 
 export const usePlaylist = () => {
   const [playList, setPlayList] = useAtom(playListAtom);
@@ -19,14 +23,26 @@ export const usePlaylist = () => {
   const [volume, setVolume] = useAtom(volumeAtom);
   const [favoriteVideos, setFavoriteVideos] = useAtom(favoriteVideosAtom);
   const [addingNewVideo, setAddingNewVideo] = useAtom(addingNewVideoAtom);
+  const [jamRoomId] = useAtom(jamRoomIdAtom);
+  const [username] = useAtom(usernameAtom);
   const { getColor } = useColor();
+
+  const syncToJam = (newPlaylist: VideoItem[]) => {
+    if (jamRoomId) {
+      axios.put(`/api/jam/${jamRoomId}`, { playlist: newPlaylist }).catch(() => {});
+    }
+  };
 
   const addVideo = (video: VideoItem) => {
     setAddingNewVideo(true);
 
-    setPlayList([...playList, video]);
+    const tagged: VideoItem = username ? { ...video, addedBy: username } : video;
+    const updated = [...playList, tagged];
+    setPlayList(updated);
+    syncToJam(updated);
+
     if (!actualVideo || !playing) {
-      setVideo(video);
+      setVideo(tagged);
     }
 
     setTimeout(() => {
@@ -34,8 +50,16 @@ export const usePlaylist = () => {
     }, 1000);
   };
 
+  const reorderPlaylist = (oldIndex: number, newIndex: number) => {
+    const updated = arrayMove(playList, oldIndex, newIndex);
+    setPlayList(updated);
+    syncToJam(updated);
+  };
+
   const removeVideo = (video: VideoItem) => {
-    setPlayList(playList.filter((item) => item !== video));
+    const updated = playList.filter((item) => item !== video);
+    setPlayList(updated);
+    syncToJam(updated);
 
     if (actualVideo === video) {
       setActualVideo(playList[0]);
@@ -131,5 +155,6 @@ export const usePlaylist = () => {
     removeFavoriteVideo,
     getFavoriteVideos,
     addingNewVideo,
+    reorderPlaylist,
   };
 };

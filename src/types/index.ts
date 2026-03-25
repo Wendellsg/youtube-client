@@ -25,6 +25,7 @@ export interface VideoItem {
     videoId: string;
   };
   snippet: Snippet;
+  addedBy?: string;
 }
 
 export interface YoutubeApiResponse {

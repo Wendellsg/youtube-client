@@ -3,17 +3,21 @@ import { SiDiscogs } from "react-icons/si";
 import { FaSearch } from "react-icons/fa";
 import { AiFillSetting, AiFillHeart } from "react-icons/ai";
 import { IoMusicalNotes } from "react-icons/io5";
+import { MdGroups } from "react-icons/md";
 import { useState } from "react";
 import { Search } from "../Search";
 import { Playlist } from "../Playlist";
 import { useColor } from "@/hooks/useColor";
 import { Favorites } from "../Favorites";
+import { Jam } from "../Jam";
 import { usePlaylist } from "@/hooks/usePlaylist";
+import { useJam } from "@/hooks/useJam";
 
 export const SideBar = () => {
   const [selectedTab, setSelectedTab] = useState("");
   const { color } = useColor();
   const { addingNewVideo } = usePlaylist();
+  const { roomId } = useJam();
 
   const Tab = () => {
     switch (selectedTab) {
@@ -23,6 +27,8 @@ export const SideBar = () => {
         return <Favorites />;
       case "playlist":
         return <Playlist />;
+      case "jam":
+        return <Jam />;
       default:
         return null;
     }
@@ -81,6 +87,25 @@ export const SideBar = () => {
               }
 
               setSelectedTab("favorites");
+            }}
+          />
+          <MdGroups
+            size={25}
+            style={{
+              cursor: "pointer",
+              color: roomId
+                ? `rgb(${color})`
+                : selectedTab === "jam"
+                ? `rgb(${color})`
+                : "gray",
+            }}
+            onClick={() => {
+              if (selectedTab === "jam") {
+                setSelectedTab("");
+                return;
+              }
+
+              setSelectedTab("jam");
             }}
           />
         </div>
